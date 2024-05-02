@@ -1,0 +1,167 @@
+--1 - Se pide el nombre de un estudiante por pantalla; decir cuántos estudiantes tienen el mismo nombre, en caso de que no existan avisar.
+
+create or replace function n_estudent(n_estudiant varchar2)
+return varchar2
+is
+var_r number;
+var_h varchar2(500);
+begin
+select count(*) into var_r from estudiantes where LOWER(nombre) like LOWER(n_estudiant||'%');
+if var_r >0 then
+var_h:= 'existen '||var_r||' estudiantes con el mismo nombre ';
+else 
+var_h :='No hay estudiantes con ese nombre';
+end if;
+return var_h;
+end;
+
+select n_estudent('&Ingresa_un_nombre') from dual;
+
+NOTA: SOLUCIÓN ADECUADA A PROBLEMAS POR ESPACIOS EN BLANCO DE LOS REGISTROS.
+
+
+//
+  /*2 - Hay una tabla llamada especialidades, que contiene 3 campos:
+● Especialidad: es el nombre de la especialidad ejemplos (Nutrición, Computación…).
+● Total créditos: es la suma de todos los créditos de los estudiantes que tienen esa
+especialidad.
+● Total estudiantes: es el conteo total de estudiantes que tienen esa especialidad.
+Crear un procedimiento que actualice los valores de dicha tabla
+  */
+
+CREATE OR REPLACE PROCEDURE UPDATE_ESPE
+(ESPECIALIDAD_I VARCHAR,CREDITOS NUMBER,TOTALESTUDIANTES_I NUMBER)
+AS
+BEGIN
+UPDATE ESPECIALIDADES SET TOTALCREDITOS=CREDITOS, TOTALESTUDIANTES=TOTALESTUDIANTES_I WHERE LOWER(ESPECIALIDAD) LIKE LOWER(ESPECIALIDAD_I||'%');
+END;
+
+EXECUTE update_espe('MUSICA',98,19)
+
+
+//
+--3 - Crear un procedimiento que permita matricular a un estudiante en un curso.(MANERA SIMPLE)
+
+CREATE OR REPLACE PROCEDURE matricular_estudiante(
+estudiante_id matriculas.idestudiante%type,
+departamento_curso matriculas.departamento%type,
+numero_curso matriculas.ncurso%type,
+grado matriculas.grado%type) 
+as
+begin
+
+INSERT INTO matriculas (idestudiante, departamento, ncurso, grado) VALUES (estudiante_id, departamento_curso, numero_curso, grado);
+END matricular_estudiante;
+
+execute matricular_estudiante(91, 'HIS', 106, 'A')
+
+//
+
+
+--4 - Mostrar por pantalla al estudiante con el ID mayor y al estudiante con el ID menor.
+
+create or replace function idMayorYmenor
+return varchar
+is
+var_1 varchar(200);
+id_mayor number :=0;
+id_menor number;
+begin
+for i in (select id from estudiantes) loop
+if i.id >id_mayor then
+id_mayor:=i.id;
+end if;
+end loop;
+id_menor:=id_mayor;
+for i in (select id from estudiantes) loop
+if i.id <id_menor then
+id_menor:=i.id;
+end if;
+end loop;
+var_1:= 'El estudiante con el ID mayor es: '||id_mayor||' Y estudiante con el ID menor es: '||id_menor;
+return var_1;
+end;
+
+select idMayorYmenor() from dual;
+
+
+//
+--6 - Crear un procedimiento que tome a todos los estudiantes de deportes y les aumente 2 créditos, en caso de no existir ninguno no hacer nada.
+
+create or replace procedure subir_creditos
+as
+VAR_1 NUMBER;
+begin
+select count(*) INTO VAR_1 from estudiantes where LOWER(especialidad)=LOWER('deportes');
+CASE 
+WHEN VAR_1>0 THEN
+UPDATE ESTUDIANTES SET CREDITOS= CREDITOS+2 WHERE LOWER(especialidad)=LOWER('deportes');
+END CASE;
+END subir_creditos;
+
+EXECUTE subir_creditos();
+
+
+//
+/*8 - Determinar el nivel poblacional de las matrículas de cursos, ósea: “contar cuantas
+matrículas tiene cada curso” clasificar en:
+● Baja: de 0 a 10 estudiantes.
+● Media: de 11 a 20 estudiantes.
+● Alta: más de 21 estudiantes
+*/
+
+create or replace procedure contar_matriculas
+as
+begin
+for i in (SELECT count (NCURSO) as var_1,ncurso FROM matriculas GROUP BY NCURSO) loop
+case 
+when i.var_1>=0 and i.var_1<=10 then
+dbms_output.put_line('CURSO: '||i.ncurso||' |NUMERO_DE_MATRICULAS: '||i.var_1||' |NIVEL POBLACIONAL: BAJO');
+
+when i.var_1>=11 and i.var_1<=20 then
+dbms_output.put_line('CURSO: '||i.ncurso||' |NUMERO_DE_MATRICULAS: '||i.var_1||' |NIVEL POBLACIONAL: MEDIO');
+
+when i.var_1>=21 then
+dbms_output.put_line('CURSO: '||i.ncurso||' |NUMERO_DE_MATRICULAS: '||i.var_1||' |NIVEL POBLACIONAL: ALTO');
+end case;
+end loop;
+end;
+
+execute contar_matriculas();
+
+
+//
+/*7 - crear una función que retorne el futuro correo electrónico del estudiante, el correo
+debe de ser:
+● Primeras 2 letras del nombre del estudiante.
+● punto.
+● Primeras 2 letras del apellido.
+● guión medio.
+● Año en curso y luego el id del estudiante.
+● terminará en ‘@colegio.com’
+ejemplo: estudiante ID 7:
+7 Barbara Buitrago Economia 5
+Su correo:
+ba.bu-20247@colegio.com
+Nota: en caso de que el estudiante no exista avisar.
+*/
+CREATE OR REPLACE FUNCTION CORREO_EST(estudiante_id estudiantes.id%type)
+RETURN VARCHAR
+IS
+var_nombre estudiantes.nombre%type;
+var_apellido estudiantes.apellido%type;
+var_3 number;
+BEGIN
+select LOWER(nombre) into var_nombre from estudiantes where id= estudiante_id;
+select LOWER(apellido) into var_apellido from estudiantes where id= estudiante_id;
+var_3:=EXTRACT(YEAR FROM SYSDATE);
+if
+var_nombre IS NOT NULL AND var_apellido IS NOT NULL THEN
+return SUBSTR(var_nombre,1,2)||'.'||SUBSTR(var_apellido,1,2)||'-'||var_3||estudiante_id||'@colegio.com';
+end if;
+exception
+when no_data_found then
+return 'Estudiante no encontrado';
+END;
+
+select CORREO_EST(87) from dual;
