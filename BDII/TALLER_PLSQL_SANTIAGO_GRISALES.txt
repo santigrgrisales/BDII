@@ -29,14 +29,17 @@ especialidad.
 Crear un procedimiento que actualice los valores de dicha tabla
   */
 
-CREATE OR REPLACE PROCEDURE UPDATE_ESPE
-(ESPECIALIDAD_I VARCHAR,CREDITOS NUMBER,TOTALESTUDIANTES_I NUMBER)
+CREATE OR REPLACE PROCEDURE 
+actualizar_Especialidad
 AS
 BEGIN
-UPDATE ESPECIALIDADES SET TOTALCREDITOS=CREDITOS, TOTALESTUDIANTES=TOTALESTUDIANTES_I WHERE LOWER(ESPECIALIDAD) LIKE LOWER(ESPECIALIDAD_I||'%');
+DELETE FROM especialidades;
+FOR i in (SELECT especialidad as especialidad, SUM(creditos) as creditos, COUNT(*) as student FROM estudiantes GROUP BY especialidad)LOOP
+    Insert into especialidades values(i.especialidad, i.creditos, i.student);
+    END LOOP;
+    commit;
 END;
-
-EXECUTE update_espe('MUSICA',98,19)
+EXECUTE actualizar_Especialidad()
 
 
 //
