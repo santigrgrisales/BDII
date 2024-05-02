@@ -85,6 +85,19 @@ end;
 select idMayorYmenor() from dual;
 
 
+// EJERCICIO 5
+
+CREATE OR REPLACE TRIGGER
+tr_creditos
+BEFORE INSERT OR UPDATE ON estudiantes FOR EACH ROW
+BEGIN
+    IF :new.creditos <= 6 OR :new.creditos >= 15 THEN
+        RAISE_APPLICATION_ERROR(-20001,'Creditos Invalidos');
+    END IF;
+END tr_creditos;
+
+INSERT INTO estudiantes VALUES (188, 'Santiago', 'Maricon', 'Nutricion',18);
+
 //
 --6 - Crear un procedimiento que tome a todos los estudiantes de deportes y les aumente 2 créditos, en caso de no existir ninguno no hacer nada.
 
