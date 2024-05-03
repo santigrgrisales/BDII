@@ -130,3 +130,25 @@ FOR I IN cur_07 LOOP
 dbms_output.put_line('ID: ' || I.ID ||'  NOMBRE: ' || I.nombre || ' APELLIDO: ' || I.apellido ||'  SEXO: ' || I.sexo || ' EDAD: ' || I.edad );
  END LOOP;
 END;
+
+
+
+// 8  Generar un procedimiento que dando el nombre una mina que se ingresa por teclado
+//retorne la cantidad de trabajadores infectados con VIH.
+
+CREATE OR REPLACE PROCEDURE PRC_8
+(MINA MINES.MINE_NAME%TYPE )
+AS
+CANTVIH NUMBER;
+BEGIN
+SELECT COUNT (*) INTO CANTVIH
+FROM PERSONS P 
+INNER JOIN PERSONS_MEDICAL_CHECK PMC ON P.PERSONS_ID = PMC.PERSONS_ID
+INNER JOIN WORKERS W ON P.PERSONS_ID = W.PERSONS_ID 
+INNER JOIN MINES M ON W.MINES_ID = M.MINES_ID 
+WHERE LOWER(M.MINE_NAME) = LOWER(MINA) AND PMC.DIAGNOSTICS_ID = 3;
+DBMS_OUTPUT.PUT_LINE('LA CANTIDAD DE PACIENTES CON VIH EN LA MINA: '||MINA|| ' ES DE: ' ||CANTVIH);
+
+END;
+
+EXECUTE PRC_8('&mina')
