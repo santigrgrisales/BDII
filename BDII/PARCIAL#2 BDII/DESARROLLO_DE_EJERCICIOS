@@ -44,3 +44,22 @@ RAISE_APPLICATION_ERROR(-20001,'En la mina no se permiten enfermos o con deficie
 end CASE;
 end;
 
+
+/*4 - crear un cursor que muestre el id, nombre, apellido, fecha de nacimiento de todas las
+mujeres que trabajan en una mina, la mina debe ser indicada por entrada de teclado*/
+
+CREATE OR REPLACE PROCEDURE PRC_4
+(MINA MINES.MINE_NAME%TYPE )
+AS
+BEGIN
+FOR I IN(SELECT P.PERSONS_ID AS PER_, P.NAME AS NAME_, P.LASTNAME AS LAST_, P.BIRTHDATE AS BIRTH_
+FROM PERSONS P 
+INNER JOIN WORKERS W ON P.PERSONS_ID = W.PERSONS_ID 
+INNER JOIN MINES M ON W.MINES_ID = M.MINES_ID 
+WHERE LOWER(M.MINE_NAME) = LOWER(MINA) AND P.SEX = 'F') LOOP
+DBMS_OUTPUT.PUT_LINE('ID_MUJER: '||I.PER_||' |NOMBRE: '||I.NAME_||' |APELLIDOS: '||I.LAST_||' |FECHA_NACIMIENTO: '||I.BIRTH_);
+END LOOP;
+END;
+
+EXECUTE PRC_4('&mina')
+
