@@ -23,7 +23,7 @@ def return_insert(values):
 SQL_FINAL = ""
 for indice, fila in datos.iterrows():
     txt = return_insert(fila.values)
-    txt = txt[0:-1]  # Eliminar la última coma
+    txt = txt[0:-1]  
 
     SQL_FINAL = SQL_FINAL + sql_datos_cabecera + str(indice+1) + "," + txt + ");\n"
 
