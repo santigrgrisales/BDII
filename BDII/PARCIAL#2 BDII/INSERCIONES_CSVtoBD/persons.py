@@ -9,7 +9,7 @@ sql_datos_cabecera="insert into workers VALUES ("
 
 def return_insert(values):
     txt_data = ""
-    for i in values[:-1]:  # Excluimos el último valor
+    for i in values[:-1]:  
         if str(i) == "nan":
             txt_data = txt_data + "\'\',"
         elif isinstance(i, (int, float)):
@@ -31,7 +31,7 @@ def return_insert(values):
 SQL_FINAL = ""
 for indice, fila in datos.iterrows():
     txt = return_insert(fila.values)
-    txt = txt[0:-1]  # Eliminar la última coma
+    txt = txt[0:-1]  
 
     SQL_FINAL = SQL_FINAL + sql_datos_cabecera + str(indice+1) + "," + txt + ");\n"
 
