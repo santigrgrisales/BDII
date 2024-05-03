@@ -1,17 +1,17 @@
 --1 - Generar una función que retorne cuantos años tiene una persona.
 
-create or replace function 
-edad_ftc(persona persons.persons_id%type)
-return number
-is
-var_birthday date;
-fecha_actual date;
-edad number;
-begin
-select birthdate into var_birthday from persons where PERSONS_ID= persona ;
+CREATE OR REPLACE FUNCTION 
+EDAD_FTC(PERSONA PERSONS.PERSONS_ID%TYPE)
+RETURN VARCHAR
+IS
+VAR_BIRTHDAY DATE;
+FECHA_ACTUAL DATE;
+EDAD NUMBER(2);
+BEGIN
+SELECT BIRTHDATE INTO VAR_BIRTHDAY FROM PERSONS WHERE PERSONS_ID= PERSONA ;
 FECHA_ACTUAL:=SYSDATE;
-edad:= (FECHA_ACTUAL-VAR_birthday)/365;
-return edad;
-end;
+EDAD:= (FECHA_ACTUAL-VAR_BIRTHDAY)/365;
+RETURN 'ID_PERSONA: '||PERSONA||' |EDAD: ' ||EDAD;
+END;
 
-select edad_ftc(319) from dual;
+SELECT EDAD_FTC(319) FROM DUAL;
