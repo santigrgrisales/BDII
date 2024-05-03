@@ -15,3 +15,32 @@ RETURN 'ID_PERSONA: '||PERSONA||' |EDAD: ' ||EDAD;
 END;
 
 SELECT EDAD_FTC(319) FROM DUAL;
+
+
+
+/*2 - los niños y viejos y enfermos no pueden trabajar en la mina. por ello cree un trigger que
+sea capaz de garantizar que ningún empleado viole esas restricciones.
+Nota: niño es considerado inferior a 12 años y un viejo es alguien mayor de 70 años
+Recuerda que no se admiten personas enfermas.*/
+
+CREATE OR REPLACE TRIGGER TR_REST_MINA
+BEFORE INSERT OR UPDATE ON workers for each row
+declare
+var_edad_persona date;
+fecha_actual date;
+edad number(2);
+VAR_ESTADO NUMBER;
+BEGIN
+select birthdate into var_edad_persona from persons where persons_id=:new.persons_id;
+SELECT DIAGNOSTICS_ID INTO VAR_ESTADO FROM PERSONS_MEDICAL_CHECK WHERE PERSONS_ID=:NEW.PERSONS_ID;
+fecha_actual:=sysdate;
+EDAD:= (FECHA_ACTUAL-VAR_edad_persona)/365;
+CASE
+WHEN edad<12 OR EDAD>70 then
+RAISE_APPLICATION_ERROR(-20001,'En la mina no se permiten niños ni ancianos');
+
+WHEN VAR_ESTADO !=1 THEN
+RAISE_APPLICATION_ERROR(-20001,'En la mina no se permiten enfermos o con deficiencias');
+end CASE;
+end;
+
