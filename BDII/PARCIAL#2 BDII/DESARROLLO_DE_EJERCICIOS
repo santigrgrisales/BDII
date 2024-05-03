@@ -45,6 +45,7 @@ end CASE;
 end;
 
 
+
 /*4 - crear un cursor que muestre el id, nombre, apellido, fecha de nacimiento de todas las
 mujeres que trabajan en una mina, la mina debe ser indicada por entrada de teclado*/
 
