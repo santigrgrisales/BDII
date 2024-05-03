@@ -111,3 +111,22 @@ END;
 
 
 SELECT vivo_o_muerto(6257) from dual;
+
+
+
+/* 7
+Generar un CURSOR de trabajadores que muestre:
+id, nombre, apellido, sexo, edad
+de todos los menores de edad que han muerto.*/
+
+DECLARE
+CURSOR cur_07 IS
+SELECT P.persons_id AS ID, P.NAME AS nombre, P.lastname AS apellido,P.sex AS sexo,(sysdate - P.birthdate)/365 AS edad FROM persons P
+INNER JOIN persons_defuntions pf ON pf.persons_id = P.persons_id
+WHERE (sysdate - P.birthdate) <= 6570 ;
+
+BEGIN
+FOR I IN cur_07 LOOP
+dbms_output.put_line('ID: ' || I.ID ||'  NOMBRE: ' || I.nombre || ' APELLIDO: ' || I.apellido ||'  SEXO: ' || I.sexo || ' EDAD: ' || I.edad );
+ END LOOP;
+END;
