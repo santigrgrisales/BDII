@@ -64,3 +64,27 @@ END;
 
 EXECUTE PRC_4('&mina')
 
+
+--5 - crear una función que retorne si un trabajador está vivo o muerto.
+
+
+create or replace function vivo_o_muerto(TRABAJADOR WORKERS.WORKERS_ID%TYPE)
+return VARCHAR2
+is
+  var_1 NUMBER;
+  var_boolean boolean;
+BEGIN
+  BEGIN
+  var_boolean:=true;
+SELECT PD.PERSONS_ID  INTO VAR_1 FROM PERSONS_DEFUNTIONS PD INNER JOIN WORKERS W ON PD.PERSONS_ID = W.PERSONS_ID WHERE PD.PERSONS_ID = TRABAJADOR;
+   return 'LATIMOSAMENTE EL TRABAJADOR CON ID: '||TRABAJADOR||' YA ESTÁ MAS MUERTO QUE EL BARCELONA';
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      var_boolean:=false;
+      return 'EL TRABAJADOR CON ID: '||TRABAJADOR||' ESTÁ REEVIVO ESE HPTA 
+|| TAMBIEN ES POSIBLE QUE ESE MALPARIDO NO HAYA TRABAJADO NUNCA EN LAS MINAS';
+  END;
+END;
+
+
+SELECT vivo_o_muerto(6257) from dual;
