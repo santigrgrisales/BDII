@@ -9,8 +9,8 @@ sql_datos_cabecera="insert into persons_defuntions VALUES ("
 
 def return_insert(values):
     txt_data = ""
-    for i in range(len(values)):  # Recorremos todos los valores
-        if i == 0:  # Si es el segundo valor
+    for i in range(len(values)):  
+        if i == 0: 
             if str(values[i]) == "nan":
                 txt_data = txt_data + "TO_DATE(\'\', 'yyyy/mm/dd'),"
             elif isinstance(values[i], (int, float)):
@@ -32,7 +32,7 @@ def return_insert(values):
 SQL_FINAL = ""
 for indice, fila in datos.iterrows():
     txt = return_insert(fila.values)
-    txt = txt[0:-1]  # Eliminar la última coma
+    txt = txt[0:-1]  
 
     SQL_FINAL = SQL_FINAL + sql_datos_cabecera + str(indice+1) + "," + txt + ");\n"
 
