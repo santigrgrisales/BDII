@@ -1,10 +1,10 @@
 import pandas as pd
 
-datos = pd.read_csv("workers.csv", sep="|")
+datos = pd.read_csv("persons.csv", sep="|")
 
 datos.columns = datos.columns.str.replace("|", "_")
 
-sql_datos_cabecera="insert into workers VALUES ("
+sql_datos_cabecera="insert into persons VALUES ("
 
 
 def return_insert(values):
@@ -36,6 +36,6 @@ for indice, fila in datos.iterrows():
     SQL_FINAL = SQL_FINAL + sql_datos_cabecera + str(indice+1) + "," + txt + ");\n"
 
 
-with open("workers.sql", "w", encoding="UTF-8") as f:
+with open("persons.sql", "w", encoding="UTF-8") as f:
     f.write(SQL_FINAL)
 
