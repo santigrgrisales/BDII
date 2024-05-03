@@ -1,0 +1,68 @@
+--CREACIÓN DE TABLAS
+
+//-1
+CREATE TABLE products(
+products_id NUMBER PRIMARY KEY,
+product_name VARCHAR2(100)
+);
+//0
+CREATE TABLE mines(
+mines_id NUMBER PRIMARY KEY,
+mine_name VARCHAR2(100),
+products_id NUMBER,
+FOREIGN KEY (products_id) REFERENCES products (products_id)
+);
+//1
+CREATE TABLE persons(
+persons_id NUMBER PRIMARY KEY,
+NAME VARCHAR2(50),
+lastname VARCHAR2(50),
+sex CHAR,
+birthdate DATE
+);
+//2
+CREATE TABLE DIAGNOSTICS(
+diagnostics_id NUMBER PRIMARY KEY,
+diagnosty VARCHAR2(100),
+DESCRIPTION VARCHAR2(200)
+);
+//3
+CREATE TABLE deaths(
+deaths_id NUMBER PRIMARY KEY,
+type_death VARCHAR2(100)
+);
+//4
+CREATE TABLE workers(
+workers_id NUMBER PRIMARY KEY,
+mines_id NUMBER,
+persons_id NUMBER,
+ingressdate DATE,
+FOREIGN KEY (mines_id) REFERENCES mines (mines_id),
+FOREIGN KEY (persons_id) REFERENCES persons (persons_id)
+);
+//5
+CREATE TABLE persons_medical_check(
+persons_medical_check_id NUMBER PRIMARY KEY,
+persons_id NUMBER,
+diagnostics_id NUMBER,
+FOREIGN KEY (persons_id) REFERENCES persons (persons_id),
+FOREIGN KEY (diagnostics_id) REFERENCES DIAGNOSTICS (diagnostics_id)
+);
+//6
+CREATE TABLE persons_defuntions(
+persons_defuntions_id NUMBER PRIMARY KEY,
+fecha DATE,
+persons_id NUMBER,
+deaths_id NUMBER,
+FOREIGN KEY (persons_id) REFERENCES persons(persons_id),    
+FOREIGN KEY (deaths_id) REFERENCES deaths(deaths_id)
+);
+//7
+CREATE TABLE product_worker(
+product_worker_id NUMBER PRIMARY KEY,
+products_id NUMBER,
+persons_id NUMBER,
+kg_product NUMBER,
+FOREIGN KEY (products_id) REFERENCES products(products_id),    
+FOREIGN KEY (persons_id) REFERENCES persons(persons_id)    
+);
