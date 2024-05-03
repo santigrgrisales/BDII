@@ -45,6 +45,29 @@ end CASE;
 end;
 
 
+--3 - Cree un procedimiento que registre un trabajador. tabla: workers Nota: validar que la
+--persona exista antes de registrar como trabajador
+
+CREATE OR REPLACE PROCEDURE registrar_worker(
+var_workers_id workers.workers_id%TYPE,
+var_mines_id workers.mines_id%TYPE,
+var_persons_id workers.persons_id%TYPE
+)
+AS
+var_val_id NUMBER;
+BEGIN
+SELECT COUNT(*) INTO var_val_id FROM persons WHERE persons_id = var_persons_id;
+IF var_val_id = 0 THEN
+    raise_application_error(-20001,'No existe la persona en la base de datos.');
+ELSE
+    INSERT INTO workers VALUES (var_workers_id, var_mines_id, var_persons_id, sysdate);
+    dbms_output.put_line('Registrado Correctamente');    
+END IF;
+END;
+
+EXECUTE registrar_worker(2436780,2,24398);
+
+
 
 /*4 - crear un cursor que muestre el id, nombre, apellido, fecha de nacimiento de todas las
 mujeres que trabajan en una mina, la mina debe ser indicada por entrada de teclado*/
