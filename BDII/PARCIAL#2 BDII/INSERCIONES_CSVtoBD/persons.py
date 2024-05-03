@@ -16,7 +16,7 @@ def return_insert(values):
             txt_data = txt_data + str(i) + ","
         else:
             txt_data = txt_data + "\'" + str(i) + "\',"
-    # Agregamos "TO_DATE(" antes del último valor
+    
     if str(values[-1]) == "nan":
         txt_data = txt_data + "TO_DATE(\'\', 'yyyy/mm/dd'),"
     elif isinstance(values[-1], (int, float)):
