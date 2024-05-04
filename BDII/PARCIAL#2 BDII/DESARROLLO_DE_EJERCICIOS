@@ -156,34 +156,34 @@ EXECUTE PRC_8('&mina')
 
 
 --9 - Cree un procedimiento que muestre el mejor trabajador de cada mina.
-set serveroutput on;
-create or replace procedure mejor_worker
-as
-var_persona varchar(200);
-begin
-for i in (
-SELECT m1.mine_name as mina, q1.persons_id as persona, MAX(q1.suma) AS kg_recolectados
+SET SERVEROUTPUT ON;
+CREATE OR REPLACE PROCEDURE mejor_worker
+AS
+var_persona VARCHAR(200);
+BEGIN
+FOR I IN (
+SELECT m1.mine_name AS mina, q1.persons_id AS persona, MAX(q1.suma) AS kg_recolectados
 FROM (
-SELECT m.mine_name, pw.persons_id, SUM(pw.kg_product) AS suma
+SELECT M.mine_name, pw.persons_id, SUM(pw.kg_product) AS suma
 FROM product_worker pw
-INNER JOIN mines m ON pw.products_id = m.mines_id
-GROUP BY m.mine_name, pw.persons_id
+INNER JOIN mines M ON pw.products_id = M.products_id
+GROUP BY M.mine_name, pw.persons_id
 )  q1
 INNER JOIN (
 SELECT mine_name, MAX(suma) AS max_suma
 FROM (
-SELECT m.mine_name, pw.persons_id, SUM(pw.kg_product) AS suma
+SELECT M.mine_name, pw.persons_id, SUM(pw.kg_product) AS suma
 FROM product_worker pw
-INNER JOIN mines m ON pw.products_id = m.mines_id
-GROUP BY m.mine_name, pw.persons_id
-)  q2
+INNER JOIN mines M ON pw.products_id = M.products_id
+GROUP BY M.mine_name, pw.persons_id
+)  
 GROUP BY mine_name
 )  m1 ON q1.mine_name = m1.mine_name AND q1.suma = m1.max_suma
 GROUP BY m1.mine_name, q1.persons_id
-) loop
-select name into var_persona from persons where PERSONS_ID= i.persona;
-DBMS_OUTPUT.PUT_LINE(var_persona||' con ID: '||i.persona||' fue el mejor trabajador de la mina de '||i.mina);
-end loop;
-end;
+) LOOP
+SELECT NAME INTO var_persona FROM persons WHERE PERSONS_ID= I.persona;
+DBMS_OUTPUT.PUT_LINE('NOMBRE: '||var_persona||' |ID: '||I.persona||' |FUE EL MEJOR TRABAJADOR DE LA MINA DE '||UPPER(I.mina)||' |RECOLECTÓ: '||I.kg_recolectados||'KG DE LOS PRODUCTOS');
+END LOOP;
+END;
 
-execute mejor_worker();
+EXECUTE mejor_worker();
