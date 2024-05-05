@@ -114,6 +114,23 @@ SELECT vivo_o_muerto(6257) from dual;
 
 
 
+//6 - crear una función que retorne la cantidad de kilos que produce de una mina.
+
+CREATE OR REPLACE FUNCTION kg_mina(mina mines.mine_name%type)
+return varchar
+is
+var_1 varchar(300);
+kgs number;
+begin
+SELECT SUM(pw.KG_PRODUCT)as kgs into kgs FROM PRODUCT_WORKER pw inner join mines m on pw.PRODUCTS_ID= m.PRODUCTS_ID and LOWER(m.mine_name)=LOWER(mina)
+GROUP BY m.mine_name;
+return 'MINA: '||MINA||' |KILOGRAMOS TOTALES MINADOS: '||KGS||'KG';
+end;
+
+select kg_mina('&ESCOJA_LA_MINA') from dual;
+
+
+
 /* 7
 Generar un CURSOR de trabajadores que muestre:
 id, nombre, apellido, sexo, edad
